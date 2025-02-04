@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  namespace: image
+  name: image-error-1
+spec:
+  containers:
+  - name: nginx
+    image: nginx:wormbook
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  namespace: image
+  name: image-error-2
+spec:
+  containers:
+  - name: busybox
+    image: busyboxs
+    command: ["/bin/sh", "-ec", "sleep 1000d"]
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: image-error-3
+  namespace: image
+spec:
+  containers:
+  - name: nginx
+    image: lf.io/library/nginx:latest
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: image-error-4
+  namespace: image
+spec:
+  imagePullSecrets:
+  - name: my-secret
+  containers:
+  - name: nginx
+    image: fazlurkhan/alpine:v1
+

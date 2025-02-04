@@ -1,0 +1,56 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: schd-error1
+  namespace: sched-err
+spec:
+  containers:
+    - name: busybox
+      image: busybox
+      command: ['sh', '-c', 'sleep 3600']
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: disktype
+                operator: In
+                values:
+                  - hdd
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: schd-error2
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      tolerations:
+      - key: "app-db"
+        operator: "Equal"
+        value: "azure-file-storage"
+        effect: "NoSchedule"
+      containers:
+      - name: web-container
+        image: nginx:1.17
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: schd-error3
+spec:
+  containers:
+  - name: cnt
+    image: nginx
+  nodeName: minion
+

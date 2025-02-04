@@ -1,0 +1,105 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-unavailable
+  namespace: svc-errs
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    app: non-existent-app
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: no-route-to-host
+  namespace: svc-errs
+spec:
+  containers:
+    - name: busybox
+      image: busybox
+      command: ['sh', '-c', 'curl http://10.255.255.1']
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: dns-resolution-failed
+  namespace: svc-errs
+spec:
+  containers:
+    - name: busybox
+      image: busybox
+      command: ['sh', '-c', 'curl http://nonexistent.example']
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: connection-refused
+  namespace: svc-errs
+spec:
+  containers:
+    - name: busybox
+      image: busybox
+      command: ['sh', '-c', 'curl http://localhost:81']
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: connection-timeout
+  namespace: svc-errs
+spec:
+  containers:
+    - name: busybox
+      image: busybox
+      command: ['sh', '-c', 'curl http://10.255.255.2']
+---
+apiVersion: v1
+kind: Node
+metadata:
+  name: network-plugin-not-ready
+spec:
+  taints:
+    - key: node.kubernetes.io/network-unavailable
+      value: "true"
+      effect: NoSchedule
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: port-already-in-use
+  namespace: svc-errs
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    app: some-app
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: conflicting-service
+  namespace: svc-errs
+spec:
+  ports:
+    - port: 80
+      targetPort: 8080
+  selector:
+    app: another-app
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: wrong-netpolicy
+  namespace: default
+spec:
+  podSelector:
+    matchLabels: {}
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - ipBlock:
+            cidr: 192.168.0.0/24
+
