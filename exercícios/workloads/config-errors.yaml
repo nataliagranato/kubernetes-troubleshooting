@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: pod-configmap-not-found
-  namespace: config-errs
+  namespace: config
 spec:
   containers:
     - name: mycontainer
@@ -19,7 +19,7 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: invalid-pod-spec
-  namespace: config-errs
+  namespace: config
 spec:
   containers:
     - name: mycontainer
@@ -31,7 +31,7 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: invalid-volume-spec
-  namespace: config-errs
+  namespace: config
 spec:
   containers:
     - name: mycontainer
@@ -47,7 +47,7 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: invalid-request
-  namespace: config-errs
+  namespace: config
 spec:
   containers:
     - name: mycontainer
@@ -60,7 +60,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: invalid-service-type
-  namespace: config-errs
+  namespace: config
 spec:
   type: InvalidType # Tipo de serviço inválido
   selector:
@@ -74,7 +74,7 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: pod-secret-not-found
-  namespace: config-errs
+  namespace: config
 spec:
   containers:
     - name: mycontainer
@@ -90,7 +90,7 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: pvc-not-found
-  namespace: config-errs
+  namespace: config
 spec:
   containers:
     - name: mycontainer
@@ -107,7 +107,7 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: volume-not-found
-  namespace: config-errs
+  namespace: config
 spec:
   containers:
     - name: mycontainer
@@ -117,29 +117,13 @@ spec:
           mountPath: /mnt/myvolume
   volumes:
     - name: myvolume # Volume não encontrado
----
-apiVersion: v1
-kind: Pod
-metadata:
-  name: volume-permission-denied
-  namespace: config-errs
-spec:
-  containers:
-    - name: mycontainer
-      image: nginx
-      volumeMounts:
-        - name: myvolume
-          mountPath: /mnt/myvolume
-  volumes:
-    - name: myvolume
-      hostPath:
-        path: /root # Assumindo que o diretório /root não é acessível
+
 ---
 apiVersion: v1
 kind: Pod
 metadata:
   name: container-config-error
-  namespace: config-errs
+  namespace: config
 spec:
   containers:
     - name: mycontainer
@@ -150,7 +134,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: duplicate-service
-  namespace: config-errs
+  namespace: config
 spec:
   selector:
     app: myapp
@@ -163,7 +147,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: duplicate-service # Nome de serviço duplicado
-  namespace: config-errs
+  namespace: config
 spec:
   selector:
     app: myapp

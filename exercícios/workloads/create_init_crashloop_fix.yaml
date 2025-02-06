@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: logging-agent
+spec:
+  containers:
+    - name: exporter
+      image: nginx
+      ports:
+        - containerPort: 80
+      volumeMounts:
+        - name: workdir
+          mountPath: /usr/share/nginx/html
+  initContainers:
+    - name: downloader
+      image: alpine:3.14
+      command:
+        - sh
+        - -c
+        - "apk add --no-cache curl && curl -o /work-dir/index.html https://nataliagranato.xyz"
+      volumeMounts:
+        - name: workdir
+          mountPath: /work-dir
+  dnsPolicy: Default
+  volumes:
+    - name: workdir
+      emptyDir: {}
